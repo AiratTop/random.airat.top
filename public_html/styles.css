@@ -351,6 +351,7 @@ textarea {
 
 textarea:focus,
 input:focus,
+.format-button:focus,
 .theme-button:focus,
 .action-button:focus,
 .repo-link:focus {
@@ -358,17 +359,17 @@ input:focus,
 }
 
 .settings-strip {
-  width: min(760px, 100%);
+  width: min(980px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   padding: 16px;
 }
 
+.format-switch,
 .theme-switch {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   padding: 4px;
   border-radius: 12px;
@@ -378,6 +379,15 @@ input:focus,
   margin: 0 auto;
 }
 
+.format-switch {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.theme-switch {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.format-button,
 .theme-button {
   appearance: none;
   border: none;
@@ -389,6 +399,7 @@ input:focus,
   cursor: pointer;
 }
 
+.format-button.is-active,
 .theme-button.is-active {
   color: #ffffff;
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));

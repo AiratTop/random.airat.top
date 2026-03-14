@@ -4,6 +4,7 @@ const RANDOM_LIMITS = {
 };
 
 const THEMES = new Set(["auto", "light", "dark"]);
+const OUTPUT_FORMATS = new Set(["text", "json"]);
 
 const STORAGE_KEY = "random-airat-top-settings-v1";
 const OUTPUT_SEPARATOR = "\n\n";
@@ -20,6 +21,7 @@ const DEFAULTS = {
   count: 3,
   template: DEFAULT_TEMPLATE,
   theme: "auto",
+  outputFormat: "text",
 };
 
 const ui = {
@@ -31,9 +33,11 @@ const ui = {
   refresh: document.querySelector("#randomRefresh"),
   copy: document.querySelector("#randomCopy"),
   download: document.querySelector("#randomDownload"),
+  downloadLabel: document.querySelector("#downloadLabel"),
   status: document.querySelector("#randomStatus"),
   variantCount: document.querySelector("#variantCount"),
   generatedCount: document.querySelector("#generatedCount"),
+  outputFormatButtons: Array.from(document.querySelectorAll("[data-output-format]")),
   themeButtons: Array.from(document.querySelectorAll("[data-theme]")),
 };
 
@@ -41,6 +45,7 @@ const state = {
   messageTimers: new Map(),
   outputList: [],
   theme: "auto",
+  outputFormat: "text",
   inputTimer: null,
 };
 
@@ -460,6 +465,10 @@ function normalizeTheme(theme) {
   return THEMES.has(theme) ? theme : DEFAULTS.theme;
 }
 
+function normalizeOutputFormat(format) {
+  return OUTPUT_FORMATS.has(format) ? format : DEFAULTS.outputFormat;
+}
+
 function normalizeSettings(raw) {
   const safe = raw && typeof raw === "object" ? raw : {};
 
@@ -471,6 +480,7 @@ function normalizeSettings(raw) {
     ),
     template: typeof safe.template === "string" ? safe.template : DEFAULTS.template,
     theme: normalizeTheme(String(safe.theme || DEFAULTS.theme)),
+    outputFormat: normalizeOutputFormat(String(safe.outputFormat || DEFAULTS.outputFormat)),
   };
 }
 
@@ -503,6 +513,7 @@ function getCurrentSettings() {
     ),
     template: ui.template.value,
     theme: state.theme,
+    outputFormat: state.outputFormat,
   };
 }
 
@@ -534,6 +545,26 @@ function setTheme(theme) {
   }
 }
 
+function updateDownloadButtonLabel() {
+  if (!ui.downloadLabel) {
+    return;
+  }
+  ui.downloadLabel.textContent = state.outputFormat === "json" ? "Download .json" : "Download .txt";
+}
+
+function setOutputFormat(format) {
+  const nextFormat = normalizeOutputFormat(format);
+  state.outputFormat = nextFormat;
+
+  ui.outputFormatButtons.forEach((button) => {
+    const isActive = button.dataset.outputFormat === nextFormat;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+
+  updateDownloadButtonLabel();
+}
+
 function formatBigInt(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -558,12 +589,12 @@ function getTimestampForFilename() {
   return `${yyyy}${mm}${dd}-${hh}${min}${ss}`;
 }
 
-function downloadTextFile(content, filename) {
+function downloadFile(content, filename, mimeType) {
   if (!content) {
     return;
   }
 
-  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -574,8 +605,19 @@ function downloadTextFile(content, filename) {
   URL.revokeObjectURL(url);
 }
 
-function getOutputText() {
+function getTextOutput() {
   return state.outputList.join(OUTPUT_SEPARATOR);
+}
+
+function getJsonOutput() {
+  return JSON.stringify(state.outputList, null, 2);
+}
+
+function getOutputText() {
+  if (state.outputFormat === "json") {
+    return getJsonOutput();
+  }
+  return getTextOutput();
 }
 
 function refreshOutput() {
@@ -590,7 +632,7 @@ function refreshOutput() {
 
   state.outputList = nextList;
 
-  ui.output.textContent = nextList.join(OUTPUT_SEPARATOR);
+  ui.output.textContent = getOutputText();
   ui.output.classList.toggle("is-single", count === 1);
   ui.generatedCount.textContent = String(count);
 
@@ -599,8 +641,8 @@ function refreshOutput() {
 }
 
 function downloadOutput() {
-  const text = getOutputText();
-  if (!text) {
+  const output = getOutputText();
+  if (!output) {
     setStatus(ui.status, "Nothing to download.");
     return;
   }
@@ -608,8 +650,16 @@ function downloadOutput() {
   const count = state.outputList.length;
   const timestamp = getTimestampForFilename();
   const suffix = count > 1 ? `-${count}` : "";
+
+  if (state.outputFormat === "json") {
+    const filename = `randomized${suffix}-${timestamp}.json`;
+    downloadFile(`${output}\n`, filename, "application/json;charset=utf-8");
+    setStatus(ui.status, "JSON downloaded.");
+    return;
+  }
+
   const filename = `randomized${suffix}-${timestamp}.txt`;
-  downloadTextFile(`${text}\n`, filename);
+  downloadFile(`${output}\n`, filename, "text/plain;charset=utf-8");
   setStatus(ui.status, "TXT downloaded.");
 }
 
@@ -628,6 +678,7 @@ function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
   setCount(normalized.count);
   ui.template.value = normalized.template;
+  setOutputFormat(normalized.outputFormat);
   setTheme(normalized.theme);
 }
 
@@ -648,7 +699,8 @@ function bindEvents() {
   });
 
   ui.copy.addEventListener("click", () => {
-    copyText(getOutputText(), ui.status, "Output");
+    const label = state.outputFormat === "json" ? "JSON output" : "Output";
+    copyText(getOutputText(), ui.status, label);
   });
 
   ui.download.addEventListener("click", downloadOutput);
@@ -657,7 +709,8 @@ function bindEvents() {
     if (event.target.closest("button")) {
       return;
     }
-    copyText(getOutputText(), ui.status, "Output");
+    const label = state.outputFormat === "json" ? "JSON output" : "Output";
+    copyText(getOutputText(), ui.status, label);
   });
 
   ui.count.addEventListener("input", () => {
@@ -666,6 +719,14 @@ function bindEvents() {
   });
 
   ui.template.addEventListener("input", scheduleTemplateRefresh);
+
+  ui.outputFormatButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setOutputFormat(button.dataset.outputFormat || DEFAULTS.outputFormat);
+      refreshOutput();
+      storeSettings();
+    });
+  });
 
   ui.themeButtons.forEach((button) => {
     button.addEventListener("click", () => {

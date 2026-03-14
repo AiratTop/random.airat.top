@@ -127,7 +127,7 @@
                 />
               </svg>
             </span>
-            Download .txt
+            <span id="downloadLabel">Download .txt</span>
           </button>
         </div>
         <p class="status" id="randomStatus" role="status"></p>
@@ -137,6 +137,19 @@
             <span>Count (1-1,000)</span>
             <input type="number" id="randomCount" min="1" max="1000" value="1" />
             <small>One generated variant per line.</small>
+          </label>
+
+          <label class="field field--center">
+            <span>Output format</span>
+            <div class="format-switch" role="group" aria-label="Output format selector">
+              <button class="format-button is-active" type="button" data-output-format="text" aria-pressed="true">
+                Text
+              </button>
+              <button class="format-button" type="button" data-output-format="json" aria-pressed="false">
+                JSON
+              </button>
+            </div>
+            <small>Text lines or JSON array output.</small>
           </label>
 
           <label class="field field--center">
