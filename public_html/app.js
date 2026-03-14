@@ -620,24 +620,53 @@ function getOutputText() {
   return getTextOutput();
 }
 
+function toSafeCountFromBigInt(value, fallbackCount) {
+  return value >= BigInt(fallbackCount) ? fallbackCount : Number(value);
+}
+
+function buildUniqueOutputList(root, targetCount) {
+  const result = [];
+  const seen = new Set();
+  const maxAttempts = Math.max(200, targetCount * 120);
+  let attempts = 0;
+
+  while (result.length < targetCount && attempts < maxAttempts) {
+    const next = root.getText();
+    if (!seen.has(next)) {
+      seen.add(next);
+      result.push(next);
+    }
+    attempts += 1;
+  }
+
+  return result;
+}
+
 function refreshOutput() {
-  const count = setCount(ui.count.value);
+  const requestedCount = setCount(ui.count.value);
   const template = ui.template.value || "";
   const root = compileTemplate(template);
+  const variants = root.getVariantCount();
+  const targetCount = toSafeCountFromBigInt(variants, requestedCount);
 
-  const nextList = [];
-  for (let i = 0; i < count; i += 1) {
-    nextList.push(root.getText());
-  }
+  const nextList = buildUniqueOutputList(root, targetCount);
 
   state.outputList = nextList;
 
   ui.output.textContent = getOutputText();
-  ui.output.classList.toggle("is-single", count === 1);
-  ui.generatedCount.textContent = String(count);
+  ui.output.classList.toggle("is-single", nextList.length === 1);
+  ui.generatedCount.textContent = String(nextList.length);
 
-  const variants = root.getVariantCount();
   ui.variantCount.textContent = formatVariantCount(variants);
+
+  if (nextList.length < requestedCount) {
+    setStatus(
+      ui.status,
+      `Requested ${requestedCount}, generated ${nextList.length} unique variant${
+        nextList.length === 1 ? "" : "s"
+      }.`
+    );
+  }
 }
 
 function downloadOutput() {
