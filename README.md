@@ -11,7 +11,6 @@ Planned API repo: https://github.com/AiratTop/random.api.airat.top
 ## Features
 
 - Full client-side generation (no server processing).
-- Syntax from ad-generator with nested support.
 - Synonyms: `{a|b|c}`.
 - Optional blocks: `{|text}`.
 - Permutations: `[a|b|c]`.
