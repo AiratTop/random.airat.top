@@ -7,6 +7,7 @@ const THEMES = new Set(["auto", "light", "dark"]);
 
 const STORAGE_KEY = "random-airat-top-settings-v1";
 const OUTPUT_SEPARATOR = "\n\n";
+const RAND_TOKEN = "%rand%";
 
 const DEFAULT_TEMPLATE = `{{Some|Many|There is a} belief|{Some|Many} think} that
 [+ and +
@@ -142,8 +143,29 @@ class ParseNode {
       return this.subNodes.reduce((total, child) => total * child.getVariantCount(), 1n);
     }
 
+    if (this.type === "string") {
+      return getRandMultiplier(this.text);
+    }
+
     return 1n;
   }
+}
+
+function getRandMultiplier(text) {
+  const value = String(text || "");
+  let count = 0;
+  let from = 0;
+
+  while (true) {
+    const index = value.indexOf(RAND_TOKEN, from);
+    if (index === -1) {
+      break;
+    }
+    count += 1;
+    from = index + RAND_TOKEN.length;
+  }
+
+  return count > 0 ? 10n ** BigInt(count) : 1n;
 }
 
 function shuffleInPlace(list) {
