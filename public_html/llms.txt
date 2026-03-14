@@ -1,7 +1,7 @@
 # random.airat.top
 
 Summary:
-random.airat.top is a static, privacy-first text randomizer based on AiratTop ad-generator syntax. It supports synonyms, permutations, separator shuffle, escaped special symbols, unlimited nesting, and `%rand%`.
+random.airat.top is a static, privacy-first text randomizer based on AiratTop ad-generator syntax. It supports synonyms, permutations, separator shuffle, escaped special symbols, unlimited nesting, `%rand%`, unique output without duplicates, and Text/JSON output modes.
 
 Primary URL:
 https://random.airat.top
@@ -12,7 +12,10 @@ Key features:
 - Nested template syntax and top-level `|` paragraph shuffle.
 - Escaping for reserved characters: `\{`, `\}`, `\|`, `\[`, `\]`, `\+`, `\\`.
 - `%rand%` replacement with random digit `0..9`.
-- Local settings persistence for template, output count, and theme.
+- Unique output mode by default (duplicate lines are not emitted).
+- Output format switch between text lines and JSON array.
+- Download output as `.txt` or `.json` depending on selected format.
+- Local settings persistence for template, output count, output format, and theme.
 
 Tech stack:
 HTML, CSS, and vanilla JavaScript.

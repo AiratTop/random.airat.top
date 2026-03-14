@@ -2,7 +2,7 @@
 
 [![random.airat.top](https://raw.githubusercontent.com/AiratTop/random.airat.top/main/public_html/screenshot.png)](https://random.airat.top/)
 
-Static, privacy-first text randomizer that runs fully in the browser.
+Static, privacy-first text randomizer that runs fully in the browser with unique output (no duplicates).
 
 Live site: https://random.airat.top/
 
@@ -18,9 +18,10 @@ Planned API repo: https://github.com/AiratTop/random.api.airat.top
 - Escaping: `\{`, `\}`, `\|`, `\[`, `\]`, `\+`, `\\`.
 - `%rand%` placeholder for random digit `0..9`.
 - Top-level `|` for paragraph shuffle.
-- Batch generation from 1 to 1,000 lines.
-- Copy, regenerate, and TXT download.
-- Local settings persistence (template, count, theme).
+- Batch generation request from 1 to 1,000 lines with unique output only (no duplicates).
+- Output format switch: plain text or JSON array.
+- Copy, regenerate, and download as `.txt` or `.json` based on selected format.
+- Local settings persistence (template, count, output format, theme).
 
 ## What is inside
 
