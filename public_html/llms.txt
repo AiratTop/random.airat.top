@@ -1,0 +1,24 @@
+# random.airat.top
+
+Summary:
+random.airat.top is a static, privacy-first text randomizer based on AiratTop ad-generator syntax. It supports synonyms, permutations, separator shuffle, escaped special symbols, unlimited nesting, and `%rand%`.
+
+Primary URL:
+https://random.airat.top
+
+Key features:
+- Synonyms with `{a|b|c}` and optional fragments with `{|text}`.
+- Permutations with `[a|b|c]` and custom separators with `[+,+a|b|c]`.
+- Nested template syntax and top-level `|` paragraph shuffle.
+- Escaping for reserved characters: `\{`, `\}`, `\|`, `\[`, `\]`, `\+`, `\\`.
+- `%rand%` replacement with random digit `0..9`.
+- Local settings persistence for template, output count, and theme.
+
+Tech stack:
+HTML, CSS, and vanilla JavaScript.
+
+Privacy:
+No text history stored on server; generation happens locally in browser. Only local settings are stored.
+
+Contact:
+AiratTop - mail@airat.top

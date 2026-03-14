@@ -1,0 +1,43 @@
+# random.airat.top
+
+[![random.airat.top](https://raw.githubusercontent.com/AiratTop/random.airat.top/main/public_html/screenshot.png)](https://random.airat.top/)
+
+Static, privacy-first text randomizer that runs fully in the browser.
+
+Live site: https://random.airat.top/
+
+Planned API repo: https://github.com/AiratTop/random.api.airat.top
+
+## Features
+
+- Full client-side generation (no server processing).
+- Syntax from ad-generator with nested support.
+- Synonyms: `{a|b|c}`.
+- Optional blocks: `{|text}`.
+- Permutations: `[a|b|c]`.
+- Permutations with separator: `[+,+a|b|c]`.
+- Escaping: `\{`, `\}`, `\|`, `\[`, `\]`, `\+`, `\\`.
+- `%rand%` placeholder for random digit `0..9`.
+- Top-level `|` for paragraph shuffle.
+- Batch generation from 1 to 1,000 lines.
+- Copy, regenerate, and TXT download.
+- Local settings persistence (template, count, theme).
+
+## What is inside
+
+- `public_html/index.html` - layout and metadata.
+- `public_html/styles.css` - theme, layout, and responsive styles.
+- `public_html/app.js` - parser, generator logic, and UI wiring.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**AiratTop**
+
+- Website: [airat.top](https://airat.top)
+- GitHub: [@AiratTop](https://github.com/AiratTop)
+- Email: [mail@airat.top](mailto:mail@airat.top)
+- Repository: [random.airat.top](https://github.com/AiratTop/random.airat.top)

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>random.airat.top | Text Randomizer</title>
+    <meta
+      name="description"
+      content="Generate pseudo-unique text locally in your browser with synonyms, permutations, nesting, and %rand%."
+    />
+    <meta
+      name="keywords"
+      content="text randomizer, ad generator, synonyms, permutations, nested templates, %rand%, local, offline, airattop"
+    />
+    <meta name="author" content="AiratTop" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://random.airat.top/" />
+    <meta property="og:title" content="random.airat.top" />
+    <meta
+      property="og:description"
+      content="Client-side text randomizer with synonyms, permutations, nesting, separator shuffle, and %rand%."
+    />
+    <meta property="og:image" content="https://random.airat.top/screenshot.png" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="random.airat.top" />
+    <meta
+      property="twitter:description"
+      content="Generate pseudo-unique text in your browser. Private, local, and fast."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta name="msvalidate.01" content="A4ADBC8E0D3C862E117640B06AC788E3" />
+    <meta name="google-site-verification" content="zuHpP1sB8u4uv7gVtMj2RNaGCoxq2lGMYENOCMovy1Y" />
+    <meta name="yandex-verification" content="6d08a6d5c02c329e" />
+    <link rel="canonical" href="https://random.airat.top/" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="stylesheet" href="styles.css" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVEGGNPJXK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-CVEGGNPJXK");
+    </script>
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <main class="shell">
+      <header class="brand">
+        <div class="brand-copy">
+          <p class="brand-eyebrow">random.airat.top</p>
+          <h1>Text Randomizer</h1>
+          <p class="brand-subtitle">
+            Browser-side randomizer with synonyms, permutations, unlimited nesting, escaped symbols,
+            separator shuffle, and <code>%rand%</code>. No server calls.
+          </p>
+        </div>
+        <div class="brand-actions">
+          <button class="repo-link reset-button" id="resetDefaults" type="button">Reset defaults</button>
+          <a class="repo-link" href="https://github.com/AiratTop/random.airat.top" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+        </div>
+      </header>
+
+      <section class="card" aria-label="Template input">
+        <label class="field" for="templateInput">
+          <span>Template</span>
+          <textarea id="templateInput" rows="9" spellcheck="false"></textarea>
+          <small>
+            Supports <code>{a|b|c}</code>, <code>{|optional}</code>, <code>[a|b|c]</code>,
+            <code>[+,+a|b|c]</code>, escaping <code>\{ \} \| \[ \] \+ \\</code>, and <code>%rand%</code>.
+          </small>
+        </label>
+      </section>
+
+      <section class="panel is-active" id="panel-random" role="region" aria-label="Randomized text output">
+        <div class="output" id="randomOutputWrap">
+          <div class="output-value output-value--text is-single" id="randomOutput" aria-live="polite"></div>
+          <div class="output-meta" aria-live="polite">
+            <span>Estimated variants: <strong id="variantCount">1</strong></span>
+            <span>Generated lines: <strong id="generatedCount">1</strong></span>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="randomCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </span>
+            Copy output
+          </button>
+          <button class="action-button secondary" type="button" id="randomRefresh">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </span>
+            Regenerate
+          </button>
+          <button class="action-button secondary" type="button" id="randomDownload">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M11 3h2v9.17l2.59-2.58L17 11l-5 5-5-5 1.41-1.41L11 12.17V3Zm-7 15h16v3H4v-3Z"
+                />
+              </svg>
+            </span>
+            Download .txt
+          </button>
+        </div>
+        <p class="status" id="randomStatus" role="status"></p>
+
+        <div class="settings-strip" aria-label="Randomizer settings">
+          <label class="field field--center">
+            <span>Count (1-1,000)</span>
+            <input type="number" id="randomCount" min="1" max="1000" value="1" />
+            <small>One generated variant per line.</small>
+          </label>
+
+          <label class="field field--center">
+            <span>Theme</span>
+            <div class="theme-switch" role="group" aria-label="Theme selector">
+              <button class="theme-button is-active" type="button" data-theme="auto" aria-pressed="true">Auto</button>
+              <button class="theme-button" type="button" data-theme="light" aria-pressed="false">Light</button>
+              <button class="theme-button" type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </div>
+            <small>Saved locally in your browser.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Syntax quick reference">
+        <h2>Syntax</h2>
+        <ul class="syntax-list">
+          <li><code>{text 1|text 2|text 3}</code> - alternatives (synonyms)</li>
+          <li><code>{|text}</code> - optional fragment</li>
+          <li><code>[text 1|text 2|text 3]</code> - permutation (shuffle)</li>
+          <li><code>[+delimiter+text 1|text 2|text 3]</code> - shuffle with separator</li>
+          <li><code>%rand%</code> - random digit from 0 to 9</li>
+          <li><code>|</code> at top level works as paragraph shuffle</li>
+          <li>All operations support nesting</li>
+        </ul>
+      </section>
+
+      <footer class="doc-footer">
+        <p>
+          © 2026
+          <a href="https://airat.top" target="_blank" rel="author">Airat.Top</a>
+          |
+          <a href="https://github.com/AiratTop/random.airat.top" target="_blank" rel="noreferrer">GitHub</a>
+          |
+          <a href="https://privacy.airat.top" target="_blank" rel="noreferrer privacy-policy">Privacy</a>
+          |
+          <a href="https://terms.airat.top" target="_blank" rel="noreferrer terms-of-service">Terms</a>
+        </p>
+      </footer>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
