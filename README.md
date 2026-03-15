@@ -19,6 +19,7 @@ Live site: https://random.airat.top
 - Batch generation request from 1 to 10,000 lines with unique output only (no duplicates).
 - Output format switch: plain text, JSON array, or CSV rows.
 - Copy, regenerate, and download as `.txt`, `.json`, or `.csv` based on selected format.
+- Template presets and one-click template copy button.
 - Local settings persistence (template, count, output format, theme).
 
 ## What is inside

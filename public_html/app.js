@@ -27,6 +27,8 @@ const DEFAULTS = {
 const ui = {
   reset: document.querySelector("#resetDefaults"),
   template: document.querySelector("#templateInput"),
+  templateCopy: document.querySelector("#templateCopy"),
+  presetButtons: Array.from(document.querySelectorAll("[data-template-preset]")),
   output: document.querySelector("#randomOutput"),
   outputWrap: document.querySelector("#randomOutputWrap"),
   count: document.querySelector("#randomCount"),
@@ -734,6 +736,24 @@ function scheduleTemplateRefresh() {
   }, 160);
 }
 
+function insertPresetIntoTemplate(snippet) {
+  const value = ui.template.value || "";
+  const start = typeof ui.template.selectionStart === "number" ? ui.template.selectionStart : value.length;
+  const end = typeof ui.template.selectionEnd === "number" ? ui.template.selectionEnd : start;
+  const nextValue = `${value.slice(0, start)}${snippet}${value.slice(end)}`;
+
+  ui.template.value = nextValue;
+  ui.template.focus();
+
+  const cursorPosition = start + snippet.length;
+  if (typeof ui.template.setSelectionRange === "function") {
+    ui.template.setSelectionRange(cursorPosition, cursorPosition);
+  }
+
+  refreshOutput();
+  storeSettings();
+}
+
 function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
   setCount(normalized.count);
@@ -789,6 +809,22 @@ function bindEvents() {
   });
 
   ui.template.addEventListener("input", scheduleTemplateRefresh);
+
+  if (ui.templateCopy) {
+    ui.templateCopy.addEventListener("click", () => {
+      copyText(ui.template.value || "", ui.status, "Template");
+    });
+  }
+
+  ui.presetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const snippet = button.dataset.templatePreset || "";
+      if (!snippet) {
+        return;
+      }
+      insertPresetIntoTemplate(snippet);
+    });
+  });
 
   ui.outputFormatButtons.forEach((button) => {
     button.addEventListener("click", () => {

@@ -15,6 +15,7 @@ Key features:
 - Unique output mode by default (duplicate lines are not emitted).
 - Output format switch between text lines, JSON array, and CSV rows.
 - Download output as `.txt`, `.json`, or `.csv` depending on selected format.
+- Template presets and one-click template copy button.
 - Local settings persistence for template, output count, output format, and theme.
 
 Tech stack:

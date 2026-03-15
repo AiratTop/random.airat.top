@@ -325,9 +325,42 @@ h1 {
   font-weight: 600;
 }
 
+.field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .field small {
   color: var(--muted);
   font-size: 12px;
+}
+
+.template-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.preset-chip {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-family: "JetBrains Mono", "SFMono-Regular", monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.preset-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-1px);
 }
 
 textarea,
@@ -351,6 +384,7 @@ textarea {
 
 textarea:focus,
 input:focus,
+.preset-chip:focus,
 .format-button:focus,
 .theme-button:focus,
 .action-button:focus,

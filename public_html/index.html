@@ -81,8 +81,19 @@
 
       <section class="card" aria-label="Template input">
         <label class="field" for="templateInput">
-          <span>Template</span>
+          <div class="field-head">
+            <span>Template</span>
+            <button class="preset-chip" id="templateCopy" type="button">Copy template</button>
+          </div>
           <textarea id="templateInput" rows="9" spellcheck="false"></textarea>
+          <div class="template-presets" aria-label="Template presets">
+            <button class="preset-chip" type="button" data-template-preset="{a|b|c}">{a|b|c}</button>
+            <button class="preset-chip" type="button" data-template-preset="{|text}">{|text}</button>
+            <button class="preset-chip" type="button" data-template-preset="[a|b|c]">[a|b|c]</button>
+            <button class="preset-chip" type="button" data-template-preset="[+,+a|b|c]">[+,+a|b|c]</button>
+            <button class="preset-chip" type="button" data-template-preset="%rand%">%rand%</button>
+            <button class="preset-chip" type="button" data-template-preset="|">|</button>
+          </div>
           <small>
             Supports <code>{a|b|c}</code>, <code>{|optional}</code>, <code>[a|b|c]</code>,
             <code>[+,+a|b|c]</code>, escaping <code>\{ \} \| \[ \] \+ \\</code>, and <code>%rand%</code>.
