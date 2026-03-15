@@ -1,6 +1,6 @@
 const RANDOM_LIMITS = {
   countMin: 1,
-  countMax: 1000,
+  countMax: 10000,
 };
 
 const THEMES = new Set(["auto", "light", "dark"]);
