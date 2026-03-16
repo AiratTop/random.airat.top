@@ -671,6 +671,17 @@ function buildUniqueOutputList(root, targetCount) {
 function refreshOutput() {
   const requestedCount = setCount(ui.count.value);
   const template = ui.template.value || "";
+
+  if (template.trim() === "") {
+    state.outputList = [];
+    ui.output.textContent = state.outputFormat === "json" ? "[]" : "";
+    ui.output.classList.toggle("is-single", false);
+    ui.generatedCount.textContent = "0";
+    ui.variantCount.textContent = "0";
+    setStatus(ui.status, "");
+    return;
+  }
+
   const root = compileTemplate(template);
   const variants = root.getVariantCount();
   const targetCount = toSafeCountFromBigInt(variants, requestedCount);
