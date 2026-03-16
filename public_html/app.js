@@ -9,6 +9,8 @@ const OUTPUT_FORMATS = new Set(["text", "json", "csv"]);
 const STORAGE_KEY = "random-airat-top-settings-v1";
 const OUTPUT_SEPARATOR = "\n\n";
 const RAND_TOKEN = "%rand%";
+const TEMPLATE_LIMIT_CHARS = 200000;
+const TEMPLATE_LIMIT_LABEL = "200,000";
 
 const DEFAULT_TEMPLATE = `{{Text randomization|Content variation}|Smart text spinning} helps you create {fresh|diverse|non-repetitive} copy fast.
 From one template, generate {multiple versions|many unique variants|different phrasing} for {ads|SEO snippets|social posts}.
@@ -463,6 +465,28 @@ function clampNumber(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function clampTemplateLength(value) {
+  const text = String(value || "");
+  if (text.length <= TEMPLATE_LIMIT_CHARS) {
+    return { value: text, truncated: false };
+  }
+  return {
+    value: text.slice(0, TEMPLATE_LIMIT_CHARS),
+    truncated: true,
+  };
+}
+
+function enforceTemplateLimit(showStatusMessage = false) {
+  const bounded = clampTemplateLength(ui.template.value || "");
+  if (bounded.truncated) {
+    ui.template.value = bounded.value;
+    if (showStatusMessage) {
+      setStatus(ui.status, `Template limit is ${TEMPLATE_LIMIT_LABEL} characters.`);
+    }
+  }
+  return bounded.truncated;
+}
+
 function normalizeTheme(theme) {
   return THEMES.has(theme) ? theme : DEFAULTS.theme;
 }
@@ -480,7 +504,7 @@ function normalizeSettings(raw) {
       RANDOM_LIMITS.countMin,
       RANDOM_LIMITS.countMax
     ),
-    template: typeof safe.template === "string" ? safe.template : DEFAULTS.template,
+    template: clampTemplateLength(typeof safe.template === "string" ? safe.template : DEFAULTS.template).value,
     theme: normalizeTheme(String(safe.theme || DEFAULTS.theme)),
     outputFormat: normalizeOutputFormat(String(safe.outputFormat || DEFAULTS.outputFormat)),
   };
@@ -742,8 +766,12 @@ function scheduleTemplateRefresh() {
   }
 
   state.inputTimer = setTimeout(() => {
+    const isTruncated = enforceTemplateLimit(false);
     refreshOutput();
     storeSettings();
+    if (isTruncated) {
+      setStatus(ui.status, `Template limit is ${TEMPLATE_LIMIT_LABEL} characters.`);
+    }
   }, 160);
 }
 
@@ -752,23 +780,28 @@ function insertPresetIntoTemplate(snippet) {
   const start = typeof ui.template.selectionStart === "number" ? ui.template.selectionStart : value.length;
   const end = typeof ui.template.selectionEnd === "number" ? ui.template.selectionEnd : start;
   const nextValue = `${value.slice(0, start)}${snippet}${value.slice(end)}`;
+  const bounded = clampTemplateLength(nextValue);
 
-  ui.template.value = nextValue;
+  ui.template.value = bounded.value;
   ui.template.focus();
 
-  const cursorPosition = start + snippet.length;
+  const cursorPosition = Math.min(start + snippet.length, bounded.value.length);
   if (typeof ui.template.setSelectionRange === "function") {
     ui.template.setSelectionRange(cursorPosition, cursorPosition);
   }
 
   refreshOutput();
   storeSettings();
+  if (bounded.truncated) {
+    setStatus(ui.status, `Template limit is ${TEMPLATE_LIMIT_LABEL} characters.`);
+  }
 }
 
 function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
   setCount(normalized.count);
   ui.template.value = normalized.template;
+  enforceTemplateLimit(false);
   setOutputFormat(normalized.outputFormat);
   setTheme(normalized.theme);
 }
