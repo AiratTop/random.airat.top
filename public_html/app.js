@@ -603,13 +603,27 @@ function formatBigInt(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function formatBigIntScientific(value, fractionDigits = 2) {
+  const text = value.toString();
+  if (text === "0") {
+    return "0";
+  }
+
+  const digits = Math.max(0, Math.min(fractionDigits, 8));
+  const first = text[0];
+  const fraction = text.slice(1, 1 + digits).padEnd(digits, "0");
+  const mantissa = digits > 0 ? `${first}.${fraction}` : first;
+  const exponent = text.length - 1;
+  return `${mantissa}e+${exponent}`;
+}
+
 function formatVariantCount(value) {
   const MAX_LEN = 18;
   const text = value.toString();
   if (text.length <= MAX_LEN) {
     return formatBigInt(value);
   }
-  return `>${text.slice(0, MAX_LEN)}...`;
+  return formatBigIntScientific(value, 2);
 }
 
 function getTimestampForFilename() {
