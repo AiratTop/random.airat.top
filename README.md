@@ -4,8 +4,8 @@
 
 Static, privacy-first text randomizer that runs fully in the browser with unique output (no duplicates).
 
-Live site: https://random.airat.top
-Status page: https://status.airat.top
+- Live site: https://random.airat.top
+- Status page: https://status.airat.top
 
 ## Features
 
