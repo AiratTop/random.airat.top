@@ -2,7 +2,7 @@
 
 [![random.airat.top](https://raw.githubusercontent.com/AiratTop/random.airat.top/main/public_html/screenshot.png)](https://random.airat.top/)
 
-Static, privacy-first text randomizer that runs fully in the browser with unique output (no duplicates).
+Static, privacy-first text randomizer that runs fully in the browser with unique output (no duplicates). Deployed as static assets on Cloudflare Workers.
 
 - Live site: https://random.airat.top
 - Status page: https://status.airat.top
@@ -28,6 +28,11 @@ Static, privacy-first text randomizer that runs fully in the browser with unique
 - `public_html/index.html` - layout and metadata.
 - `public_html/styles.css` - theme, layout, and responsive styles.
 - `public_html/app.js` - parser, generator logic, and UI wiring.
+- `wrangler.jsonc` - Cloudflare Worker and static asset configuration.
+
+## Deployment
+
+Cloudflare Workers Builds deploys the contents of `public_html` as static assets. The project has no build step; deployment uses `npx wrangler deploy` with the settings in `wrangler.jsonc`.
 
 ## License
 
